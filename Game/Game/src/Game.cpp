@@ -2,82 +2,67 @@
 # include "Game.hpp"
 
 Game::Game(const InitData& init)
-	: IScene(init)
-{
-	// ‰¡ (Scene::Width() / blockSize.x) ŒÂAc 5 ŒÂ‚ÌƒuƒƒbƒN‚ğ”z—ñ‚É’Ç‰Á‚·‚é
-	for (auto p : step(Size((Scene::Width() / blockSize.x), 5)))
-	{
-		m_blocks << Rect(p.x * blockSize.x, 60 + p.y * blockSize.y, blockSize);
-	}
+	: IScene(init) {
+
+    sceneTime.start();
+    
+# ifdef BUTTON_VERSION
+	const auto result = getData().apiClient.get_button_score_ranking(getData().currentMusicId).all();
+# else
+	const auto result = getData().apiClient.get_board_score_ranking(getData().currentMusicId).all();
+# endif
+	if (!result) {
+		Logger << U"[get ranking of music no." << getData().currentMusicId << U"] Connection Failed";
+  		connectionFailed = true;
+    }
+
+	const auto& body = result.success_value().parsed_body();
+   	ranking.insert(ranking.cend(), body.cbegin(), body.cend());
+		
+	connectionFailed = false;
 }
 
-void Game::update()
-{
-	// ƒpƒhƒ‹‚ğ‘€ì
-	m_paddle = Rect(Arg::center(Cursor::Pos().x, 500), 60, 10);
-
-	// ƒ{[ƒ‹‚ğˆÚ“®
-	m_ball.moveBy(m_ballVelocity * Scene::DeltaTime());
-
-	// ƒuƒƒbƒN‚ğ‡‚Éƒ`ƒFƒbƒN
-	for (auto it = m_blocks.begin(); it != m_blocks.end(); ++it)
-	{
-		// ƒ{[ƒ‹‚ÆƒuƒƒbƒN‚ªŒğ·‚µ‚Ä‚¢‚½‚ç
-		if (it->intersects(m_ball))
-		{
-			// ƒ{[ƒ‹‚ÌŒü‚«‚ğ”½“]‚·‚é
-			(it->bottom().intersects(m_ball) || it->top().intersects(m_ball) ? m_ballVelocity.y : m_ballVelocity.x) *= -1;
-
-			// ƒuƒƒbƒN‚ğ”z—ñ‚©‚çíœiƒCƒeƒŒ[ƒ^‚ª–³Œø‚É‚È‚é‚Ì‚Å’ˆÓj
-			m_blocks.erase(it);
-
-			// ƒXƒRƒA‚ğ‰ÁZ
-			++m_score;
-
-			// ‚±‚êˆÈãƒ`ƒFƒbƒN‚µ‚È‚¢  
-			break;
-		}
-	}
-
-	// “Vˆä‚É‚Ô‚Â‚©‚Á‚½‚ç‚Í‚Ë•Ô‚é
-	if (m_ball.y < 0 && m_ballVelocity.y < 0)
-	{
-		m_ballVelocity.y *= -1;
-	}
-
-	if (m_ball.y > Scene::Height())
-	{
-		changeScene(State::Title);
-		getData().highScore = Max(getData().highScore, m_score);
-	}
-
-	// ¶‰E‚Ì•Ç‚É‚Ô‚Â‚©‚Á‚½‚ç‚Í‚Ë•Ô‚é
-	if ((m_ball.x < 0 && m_ballVelocity.x < 0) || (Scene::Width() < m_ball.x && m_ballVelocity.x > 0))
-	{
-		m_ballVelocity.x *= -1;
-	}
-
-	// ƒpƒhƒ‹‚É‚ ‚½‚Á‚½‚ç‚Í‚Ë•Ô‚é
-	if (m_ballVelocity.y > 0 && m_paddle.intersects(m_ball))
-	{
-		// ƒpƒhƒ‹‚Ì’†S‚©‚ç‚Ì‹——£‚É‰‚¶‚Ä‚Í‚Ë•Ô‚éŒü‚«‚ğ•Ï‚¦‚é
-		m_ballVelocity = Vec2((m_ball.x - m_paddle.center().x) * 10, -m_ballVelocity.y).setLength(speed);
-	}
+void Game::update() {
+    // ã‚·ãƒ¼ãƒ³åˆ‡ã‚Šæ›¿ãˆ
+    if (sceneTime.s() > sceneDisplaySec) {
+        if (getData().currentMusicId >= getData().musics.back().id) {
+            changeScene(State::Title);
+            getData().currentMusicId = 0;
+        } else {
+            changeScene(State::Game);
+            getData().currentMusicId++;
+        }
+    }
 }
 
-void Game::draw() const
-{
-	FontAsset(U"Score")(m_score).drawAt(Scene::Center().x, 30);
+void Game::draw() const {
+	FontAsset(U"h3")(
+		U"{}"_fmt(sceneDisplaySec - sceneTime.s())
+    ).draw(0, 0);
+    
+	const auto& font = FontAsset(U"h4");
+	for (size_t i = 0; i < 10; i++) {
+		// é †ä½
+        font(i + 1).draw(10, 40 + 40 * i);
+        
+      	String name, qrcode, score;
 
-	// ‚·‚×‚Ä‚ÌƒuƒƒbƒN‚ğ•`‰æ‚·‚é
-	for (const auto& block : m_blocks)
-	{
-		block.stretched(-1).draw(HSV(block.y - 40));
-	}
-
-	// ƒ{[ƒ‹‚ğ•`‚­
-	m_ball.draw();
-
-	// ƒpƒhƒ‹‚ğ•`‚­
-	m_paddle.draw();
+        if (i < ranking.size()) {
+            const auto& item = ranking[i];
+            name = Unicode::Widen(item.user.name);
+            qrcode = Unicode::Widen(item.user.qrcode);
+            score = U"{:>11}"_fmt(item.score.points.value_or(0));
+        } else {
+        	name = U"---";
+         	qrcode = U"---";
+          	score = U"---";
+        }
+        
+        // åå‰
+        font(name).draw(30, 40 + 40 * i);
+        // QRã‚³ãƒ¼ãƒ‰
+        font(qrcode).draw(200, 40 + 40 * i);
+        // ã‚¹ã‚³ã‚¢
+        font(score).draw(400, 40 + 40 * i);
+    }
 }

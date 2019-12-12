@@ -24,56 +24,32 @@ void Main()
 	Scene::SetBackground(ColorF(0.2, 0.8, 0.4));
 
 	// 使用するフォントアセットを登録
-	FontAsset::Register(U"h1", 120, U"example/font/AnnyantRoman/AnnyantRoman.ttf");
-	FontAsset::Register(U"h2", 60, Typeface::Regular);
-    FontAsset::Register(U"h3", 30, Typeface::Regular);
-    FontAsset::Register(U"h4", 24, Typeface::Regular);
-    FontAsset::Register(U"h5", 18, Typeface::Regular);
-    FontAsset::Register(U"h6", 10, Typeface::Regular);
+	FontAsset::Register(U"Title", 120, U"example/font/AnnyantRoman/AnnyantRoman.ttf");
+	FontAsset::Register(U"Menu", 30, Typeface::Regular);
+	FontAsset::Register(U"Score", 36, Typeface::Bold);
 
 	// 設定読み込み
-	const JSONReader settings(U"../settings.json");
-	if (!settings) {
-		Logger << U"Cannot open settings.json";
-    }
-
-	const String host = settings[U"client.host"].getString();
-	const String port = settings[U"client.port"].getString();
-	const String token = settings[U"client.token"].getString();
-	const Array<int32> excpetMusicIds = settings[U"except_music_ids"].getArray<int32>();
+	const INIData settings(U"../settings.ini");
+	const String host = Parse<String>(settings[U"client.host"]);
+	const String port = Parse<String>(settings[U"client.port"]);
+	const String token = Parse<String>(settings[U"client.token"]);
 
 	// ゲームデータの初期化
 	std::shared_ptr<GameData> gameData(new GameData());
 	gameData->apiClient.destination(host.narrow(), port.narrow()).token(token.narrow());
-	gameData->currentMusicId = 0;
-
 	{
-        const auto result = gameData->apiClient.get_musics().all();
-        if (!result) {
-            Logger << U"[get musics] Connection Failed";
-            return ;
-        }
+	const auto result = gameData->apiClient.get_musics().all();
+if (!result) {
+Logger << U"[get musics] Connection Failed";
+return ;
+}
 
-        const auto& response = result.success_value();
-        if (response.status_code() != 200) {
-            Logger << U"[get musics] status code " << response.status_code();
-            return ;
-        }
+const auto& response = result.success_value()
+if ()
 
-        if (response.pagination().total_records == 0) {
-        	Logger << U"No musics to show";
-	        return ;
-        }
-
-        for (const auto& music : response.parsed_body()) {
-            if (!excpetMusicIds.includes(music.id)) {
-                gameData->musics.push_back(music);
-            }
-        }
-    }
 
 	// シーンと遷移時の色を設定
-	MyApp manager(gameData);
+	MyApp manager;
 	manager
 		.add<Title>(State::Title)
 		.add<Game>(State::Game)

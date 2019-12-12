@@ -390,3 +390,8 @@ AS_DEBUG/
 
 include/
 lib/
+
+
+# Extra
+settings.json
+*.out
