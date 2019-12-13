@@ -1,4 +1,4 @@
-
+﻿
 # pragma once
 # include <Siv3D.hpp> // OpenSiv3D v0.4.2
 
@@ -11,6 +11,11 @@
 # ifdef BUTTON_VERSION
 # define WII_VERSION
 # endif
+
+
+namespace config {
+    static const Size windowSize(1920, 1080);
+}
 
 // シーンの名前
 enum class State {

@@ -1,4 +1,4 @@
-
+﻿
 //
 // OpenSiv3D v0.4.2 ゲームテンプレート
 //
@@ -20,6 +20,9 @@ void Main()
 	// タイトルを設定
 	Window::SetTitle(U"miditone#");
 
+    Window::Resize(config::windowSize, WindowResizeOption::ResizeSceneSize, false);
+    // Window::SetFullscreen(true, config::windowSize, WindowResizeOption::ResizeSceneSize);
+
 	// 背景色を設定
 	Scene::SetBackground(ColorF(0.2, 0.8, 0.4));
 
@@ -32,7 +35,7 @@ void Main()
     FontAsset::Register(U"h6", 10, Typeface::Regular);
 
 	// 設定読み込み
-	const JSONReader settings(U"../settings.json");
+	const JSONReader settings(U"settings.json");
 	if (!settings) {
 		Logger << U"Cannot open settings.json";
     }

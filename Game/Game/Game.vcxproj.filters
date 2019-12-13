@@ -1,14 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="Source Files">
-      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
-      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
-    </Filter>
-    <Filter Include="Header Files">
-      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
-      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
-    </Filter>
     <Filter Include="Resource Files">
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
@@ -93,6 +85,13 @@
     </Filter>
     <Filter Include="Resource Files\example\font\LogoTypeGothic">
       <UniqueIdentifier>{b3586a98-5569-49e1-b9d6-cd80cf76ce9d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="src\miditone-client">
+      <UniqueIdentifier>{7f1ec57c-be02-41e0-85ca-a1cf4c3b1bf3}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -362,25 +361,55 @@
     </Xml>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\Main.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="src\miditone-client\ClientRequests.cpp">
+      <Filter>src\miditone-client</Filter>
     </ClCompile>
-    <ClCompile Include="src\Title.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="src\miditone-client\ClientResponses.cpp">
+      <Filter>src\miditone-client</Filter>
+    </ClCompile>
+    <ClCompile Include="src\miditone-client\HTTPClient.cpp">
+      <Filter>src\miditone-client</Filter>
+    </ClCompile>
+    <ClCompile Include="src\miditone-client\MiditoneClient.cpp">
+      <Filter>src\miditone-client</Filter>
     </ClCompile>
     <ClCompile Include="src\Game.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Main.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Title.cpp">
+      <Filter>src</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\Game.hpp">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="src\miditone-client\ClientBase.hpp">
+      <Filter>src\miditone-client</Filter>
     </ClInclude>
-    <ClInclude Include="src\Title.hpp">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="src\miditone-client\ClientRequests.hpp">
+      <Filter>src\miditone-client</Filter>
+    </ClInclude>
+    <ClInclude Include="src\miditone-client\ClientResponses.hpp">
+      <Filter>src\miditone-client</Filter>
+    </ClInclude>
+    <ClInclude Include="src\miditone-client\HTTPClient.hpp">
+      <Filter>src\miditone-client</Filter>
+    </ClInclude>
+    <ClInclude Include="src\miditone-client\MiditoneClient.hpp">
+      <Filter>src\miditone-client</Filter>
+    </ClInclude>
+    <ClInclude Include="src\miditone-client\Result.hpp">
+      <Filter>src\miditone-client</Filter>
     </ClInclude>
     <ClInclude Include="src\Common.hpp">
-      <Filter>Header Files</Filter>
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game.hpp">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Title.hpp">
+      <Filter>src</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

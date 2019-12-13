@@ -1,6 +1,14 @@
-
+﻿
 # pragma once
 # include "Common.hpp"
+
+
+struct played_times_t {
+    int times;
+    api_client::response::music_attr music;
+
+    played_times_t(int t, api_client::response::music_attr m) : times(t), music(m) {}
+};
 
 
 // ゲームシーン
@@ -12,7 +20,8 @@ private:
 
 	Stopwatch sceneTime;
 	
-	Array<api_client::response::musics_score_t> ranking;
+    Array<played_times_t> button_ranking;
+    Array<played_times_t> board_ranking;
 	
 	bool connectionFailed;
 
